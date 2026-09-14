@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head><title th:text="${formTitle}">User</title></head>
+<body><main layout:fragment="content"><div class="row justify-content-center"><div class="col-lg-7"><div class="card border-0 shadow-sm"><div class="card-body p-4"><h1 class="h4 mb-4" th:text="${formTitle}"></h1><div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+<form method="post" th:action="@{/admin/user/save}" th:object="${user}"><input type="hidden" th:field="*{id}">
+<div class="mb-3"><label class="form-label">Tên đăng nhập</label><input class="form-control" th:field="*{username}"><div class="text-danger small" th:errors="*{username}"></div></div>
+<div class="mb-3"><label class="form-label">Mật khẩu</label><input type="password" class="form-control" th:field="*{password}" placeholder="Để trống nếu không đổi mật khẩu"></div>
+<div class="mb-3"><label class="form-label">Email</label><input type="email" class="form-control" th:field="*{email}"><div class="text-danger small" th:errors="*{email}"></div></div>
+<div class="mb-3"><label class="form-label">Quyền</label><select class="form-select" th:field="*{role}"><option value="1">Admin</option><option value="0">User</option></select></div>
+<div class="mb-4"><label class="form-label">Trạng thái</label><select class="form-select" th:field="*{status}"><option value="1">Mở</option><option value="0">Khóa</option></select></div>
+<button class="btn btn-primary">Lưu</button> <a class="btn btn-outline-secondary" th:href="@{/admin/user/list}">Hủy</a></form>
+</div></div></div></div></main></body></html>

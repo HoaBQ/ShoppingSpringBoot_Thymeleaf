@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head><title>Danh sách Product</title></head>
+<body><main layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4"><div><h1 class="h3">Quản lý Product</h1><p class="text-secondary mb-0">Tìm kiếm và phân trang sản phẩm</p></div><a class="btn btn-primary" th:href="@{/admin/product/add}">Thêm product</a></div>
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div><div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <div class="card border-0 shadow-sm"><div class="card-body">
+        <form class="row g-2 mb-3" method="get" th:action="@{/admin/product/list}"><div class="col-md-8"><input class="form-control" name="keyword" th:value="${keyword}" placeholder="Tìm theo tên sản phẩm"></div><div class="col-auto"><button class="btn btn-outline-primary">Tìm kiếm</button></div><div class="col-auto"><a class="btn btn-outline-secondary" th:href="@{/admin/product/list}">Đặt lại</a></div></form>
+        <div class="table-responsive"><table class="table table-hover align-middle"><thead class="table-light"><tr><th>Ảnh</th><th>ID</th><th>Sản phẩm</th><th>Danh mục</th><th>Giá</th><th>Trạng thái</th><th class="text-end">Thao tác</th></tr></thead><tbody>
+            <tr th:each="product : ${products}"><td><img th:if="${product.image}" th:src="@{/image(fname=${product.image})}" class="rounded border" style="width: 56px; height: 42px; object-fit: cover" alt="Ảnh sản phẩm"></td><td th:text="${product.id}"></td><td th:text="${product.productName}"></td><td th:text="${product.category != null ? product.category.categoryName : '-'}"></td><td th:text="${product.price}"></td><td><span class="badge text-bg-success" th:if="${product.status == 1}">Mở</span><span class="badge text-bg-secondary" th:unless="${product.status == 1}">Khóa</span></td><td class="text-end"><a class="btn btn-sm btn-outline-primary" th:href="@{/admin/product/edit/{id}(id=${product.id})}">Sửa</a> <form class="d-inline" method="post" th:action="@{/admin/product/delete/{id}(id=${product.id})}" onsubmit="return confirm('Xóa sản phẩm này?');"><button class="btn btn-sm btn-outline-danger">Xóa</button></form></td></tr>
+            <tr th:if="${#lists.isEmpty(products)}"><td colspan="7" class="text-center text-secondary">Không có sản phẩm.</td></tr>
+        </tbody></table></div>
+    </div>
+    <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center">
+        <span class="small text-secondary"
+              th:text="'Trang ' + ${currentPage} + ' / ' + ${productPage.totalPages}"></span>
+        <nav th:if="${productPage.totalPages > 1}">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item" th:classappend="${productPage.first} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/admin/product/list(page=${currentPage - 1}, keyword=${keyword})}">
+                        Trước
+                    </a>
+                </li>
+                <li class="page-item"
+                    th:each="pageNumber : ${#numbers.sequence(1, productPage.totalPages)}"
+                    th:classappend="${pageNumber == currentPage} ? 'active'">
+                    <a class="page-link"
+                       th:text="${pageNumber}"
+                       th:href="@{/admin/product/list(page=${pageNumber}, keyword=${keyword})}">
+                    </a>
+                </li>
+                <li class="page-item" th:classappend="${productPage.last} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/admin/product/list(page=${currentPage + 1}, keyword=${keyword})}">
+                        Sau
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    </div>
+</main></body></html>

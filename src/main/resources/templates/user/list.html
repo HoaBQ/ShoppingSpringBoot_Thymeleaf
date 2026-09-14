@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head><title>Danh sách User</title></head>
+<body><main layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4"><div><h1 class="h3">Quản lý User</h1><p class="text-secondary mb-0">Tìm kiếm và phân trang người dùng</p></div><a class="btn btn-primary" th:href="@{/admin/user/add}">Thêm user</a></div>
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div><div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <div class="card border-0 shadow-sm"><div class="card-body">
+        <form class="row g-2 mb-3" method="get" th:action="@{/admin/user/list}"><div class="col-md-8"><input class="form-control" name="keyword" th:value="${keyword}" placeholder="Tìm theo username"></div><div class="col-auto"><button class="btn btn-outline-primary">Tìm kiếm</button></div><div class="col-auto"><a class="btn btn-outline-secondary" th:href="@{/admin/user/list}">Đặt lại</a></div></form>
+        <div class="table-responsive"><table class="table table-hover align-middle"><thead class="table-light"><tr><th>ID</th><th>Username</th><th>Email</th><th>Quyền</th><th>Trạng thái</th><th class="text-end">Thao tác</th></tr></thead><tbody>
+            <tr th:each="user : ${users}"><td th:text="${user.id}"></td><td th:text="${user.username}"></td><td th:text="${user.email}"></td><td th:text="${user.role == 1 ? 'Admin' : 'User'}"></td><td th:text="${user.status == 1 ? 'Mở' : 'Khóa'}"></td><td class="text-end"><a class="btn btn-sm btn-outline-primary" th:href="@{/admin/user/edit/{id}(id=${user.id})}">Sửa</a> <form class="d-inline" method="post" th:action="@{/admin/user/delete/{id}(id=${user.id})}" onsubmit="return confirm('Xóa người dùng này?');"><button class="btn btn-sm btn-outline-danger">Xóa</button></form></td></tr>
+            <tr th:if="${#lists.isEmpty(users)}"><td colspan="6" class="text-center text-secondary">Không có người dùng.</td></tr>
+        </tbody></table></div>
+    </div><div class="card-footer bg-white border-0 d-flex justify-content-between"><span th:text="'Trang ' + ${currentPage} + ' / ' + ${userPage.totalPages}"></span><div th:if="${userPage.totalPages > 1}"><a class="btn btn-sm btn-outline-secondary" th:each="p : ${#numbers.sequence(1, userPage.totalPages)}" th:text="${p}" th:classappend="${p == currentPage} ? 'active'" th:href="@{/admin/user/list(page=${p}, keyword=${keyword})}"></a></div></div></div>
+</main></body></html>

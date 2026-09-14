@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head><title th:text="${formTitle}">Product</title></head>
+<body><main layout:fragment="content"><div class="row justify-content-center"><div class="col-lg-8"><div class="card border-0 shadow-sm"><div class="card-body p-4"><h1 class="h4 mb-4" th:text="${formTitle}"></h1><div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+<form id="productForm" method="post" enctype="multipart/form-data" th:action="@{/admin/product/save}" th:object="${product}"><input type="hidden" th:field="*{id}"><input type="hidden" name="existingImage" th:value="${product.image}">
+<div class="mb-3"><label class="form-label">Tên sản phẩm</label><input class="form-control" th:field="*{productName}" th:classappend="${#fields.hasErrors('productName')} ? 'is-invalid'"><div class="invalid-feedback" th:errors="*{productName}"></div></div>
+<div class="mb-3"><label class="form-label">Giá</label><input type="number" step="0.01" class="form-control" th:field="*{price}"><div class="text-danger small" th:errors="*{price}"></div></div>
+<div class="mb-3"><label class="form-label">Mô tả</label><textarea class="form-control" th:field="*{description}"></textarea></div>
+<div class="mb-3"><label class="form-label" for="imageFile">Hình ảnh</label><input id="imageFile" type="file" name="imageFile" class="form-control" accept="image/*"><div class="form-text">Chọn ảnh tối đa 10MB. Bỏ trống nếu giữ ảnh hiện tại.</div><div id="uploadWarning" class="alert alert-warning mt-2 d-none" role="alert">Hình ảnh vượt quá 10MB. Vui lòng chọn hình ảnh khác nhẹ hơn.</div><img th:if="${product.image}" th:src="@{/image(fname=${product.image})}" class="img-thumbnail mt-2" style="max-width: 180px; max-height: 120px" alt="Ảnh sản phẩm"></div>
+<div class="mb-3"><label class="form-label">Danh mục</label><select class="form-select" th:field="*{category.id}"><option value="">-- Chọn danh mục --</option><option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.categoryName}"></option></select></div>
+<div class="mb-4"><label class="form-label">Trạng thái</label><select class="form-select" th:field="*{status}"><option value="1">Mở</option><option value="0">Khóa</option></select></div>
+<button class="btn btn-primary">Lưu</button> <a class="btn btn-outline-secondary" th:href="@{/admin/product/list}">Hủy</a></form>
+<script>
+    (function () {
+        const form = document.getElementById('productForm');
+        const input = document.getElementById('imageFile');
+        const warning = document.getElementById('uploadWarning');
+        const maxSize = 10 * 1024 * 1024;
+
+        form.addEventListener('submit', function (event) {
+            warning.classList.add('d-none');
+            if (input.files.length > 0 && input.files[0].size > maxSize) {
+                event.preventDefault();
+                warning.classList.remove('d-none');
+                input.focus();
+            }
+        });
+    }());
+</script>
+</div></div></div></div></main>
+</body></html>

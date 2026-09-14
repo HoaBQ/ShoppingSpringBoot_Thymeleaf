@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head><title th:text="${formTitle}">Category</title></head>
+<body>
+<main layout:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="h4 mb-4" th:text="${formTitle}">Category</h1>
+                    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                    <form id="categoryForm" method="post" enctype="multipart/form-data" th:action="@{/admin/category/save}" th:object="${category}">
+                        <input type="hidden" th:field="*{id}">
+                        <input type="hidden" name="existingImage" th:value="${category.image}">
+                        <div class="mb-3">
+                            <label class="form-label" for="categoryName">Tên category</label>
+                            <input id="categoryName" class="form-control" th:field="*{categoryName}"
+                                   th:classappend="${#fields.hasErrors('categoryName')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('categoryName')}" th:errors="*{categoryName}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="imageFile">Hình ảnh</label>
+                            <input id="imageFile" type="file" name="imageFile" class="form-control" accept="image/*">
+                            <div class="form-text">Chọn ảnh tối đa 10MB. Bỏ trống nếu giữ ảnh hiện tại.</div>
+                            <div id="uploadWarning" class="alert alert-warning mt-2 d-none" role="alert">
+                                Hình ảnh vượt quá 10MB. Vui lòng chọn hình ảnh khác nhẹ hơn.
+                            </div>
+                            <img th:if="${category.image}" th:src="@{/image(fname=${category.image})}" class="img-thumbnail mt-2" style="max-width: 180px; max-height: 120px" alt="Ảnh category">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label" for="status">Trạng thái</label>
+                            <select id="status" class="form-select" th:field="*{status}">
+                                <option value="1">Đang hoạt động</option>
+                                <option value="0">Tạm khóa</option>
+                            </select>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary" type="submit">Lưu category</button>
+                            <a class="btn btn-outline-secondary" th:href="@{/admin/category/list}">Hủy</a>
+                        </div>
+                    </form>
+                    <script>
+                        (function () {
+                            const form = document.getElementById('categoryForm');
+                            const input = document.getElementById('imageFile');
+                            const warning = document.getElementById('uploadWarning');
+                            const maxSize = 10 * 1024 * 1024;
+
+                            form.addEventListener('submit', function (event) {
+                                warning.classList.add('d-none');
+                                if (input.files.length > 0 && input.files[0].size > maxSize) {
+                                    event.preventDefault();
+                                    warning.classList.remove('d-none');
+                                    input.focus();
+                                }
+                            });
+                        }());
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

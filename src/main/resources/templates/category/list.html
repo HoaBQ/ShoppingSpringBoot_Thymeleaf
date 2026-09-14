@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Danh sách Category</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+        <div>
+            <h1 class="h3 mb-1">Quản lý Category</h1>
+            <p class="text-secondary mb-0">CRUD, tìm kiếm và phân trang bằng Thymeleaf</p>
+        </div>
+        <a class="btn btn-primary" th:href="@{/admin/category/add}">
+            <i class="bi bi-plus-lg me-1"></i>Thêm category
+        </a>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <form class="row g-2 mb-3" method="get" th:action="@{/admin/category/list}">
+                <div class="col-md-8">
+                    <label class="visually-hidden" for="keyword">Từ khóa</label>
+                    <input id="keyword" class="form-control" name="keyword" th:value="${keyword}"
+                           placeholder="Tìm theo tên category">
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-outline-primary" type="submit">
+                        <i class="bi bi-search me-1"></i>Tìm kiếm
+                    </button>
+                </div>
+                <div class="col-auto">
+                    <a class="btn btn-outline-secondary" th:href="@{/admin/category/list}">Đặt lại</a>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                    <tr><th>Ảnh</th><th>ID</th><th>Tên category</th><th>Trạng thái</th><th class="text-end">Thao tác</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="category : ${categories}">
+                        <td><img th:if="${category.image}" th:src="@{/image(fname=${category.image})}" class="rounded border" style="width: 56px; height: 42px; object-fit: cover" alt="Ảnh category"></td>
+                        <td th:text="${category.id}"></td>
+                        <td class="fw-semibold" th:text="${category.categoryName}"></td>
+                        <td><span class="badge text-bg-success" th:if="${category.status == 1}">Đang hoạt động</span>
+                            <span class="badge text-bg-secondary" th:unless="${category.status == 1}">Tạm khóa</span></td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-primary" th:href="@{/admin/category/edit/{id}(id=${category.id})}">Sửa</a>
+                            <form class="d-inline" method="post" th:action="@{/admin/category/delete/{id}(id=${category.id})}"
+                                  onsubmit="return confirm('Bạn có chắc muốn xóa category này?');">
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(categories)}"><td colspan="5" class="text-center text-secondary py-4">Không tìm thấy category.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white border-0 d-flex justify-content-between align-items-center">
+            <span class="small text-secondary" th:text="'Trang ' + ${currentPage} + ' / ' + ${categoryPage.totalPages}"></span>
+            <nav th:if="${categoryPage.totalPages > 1}">
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item" th:classappend="${categoryPage.first} ? 'disabled'">
+                        <a class="page-link" th:href="@{/admin/category/list(page=${currentPage - 1}, keyword=${keyword})}">Trước</a>
+                    </li>
+                    <li class="page-item" th:each="pageNumber : ${#numbers.sequence(1, categoryPage.totalPages)}"
+                        th:classappend="${pageNumber == currentPage} ? 'active'">
+                        <a class="page-link" th:text="${pageNumber}"
+                           th:href="@{/admin/category/list(page=${pageNumber}, keyword=${keyword})}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${categoryPage.last} ? 'disabled'">
+                        <a class="page-link" th:href="@{/admin/category/list(page=${currentPage + 1}, keyword=${keyword})}">Sau</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</main>
+</body>
+</html>

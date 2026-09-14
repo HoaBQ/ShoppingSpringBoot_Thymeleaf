@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đăng nhập - ShoppingSpringBoot</title>
+    <link rel="stylesheet" th:href="@{/assets/libs/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/assets/libs/bootstrap-icons/bootstrap-icons.css}">
+    <style>
+        body { min-height: 100vh; background: linear-gradient(135deg, #172554, #2563eb, #38bdf8); }
+        .login-card { max-width: 430px; border: 0; border-radius: 1rem; box-shadow: 0 1rem 3rem rgba(15, 23, 42, .25); }
+        .brand-mark { width: 64px; height: 64px; border-radius: 1rem; display: inline-flex; align-items: center; justify-content: center; background: #dbeafe; color: #1d4ed8; font-size: 2rem; }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center p-3">
+<main class="w-100 login-card card">
+    <div class="card-body p-4 p-md-5">
+        <div class="text-center mb-4">
+            <div class="brand-mark mb-3"><i class="bi bi-shield-lock"></i></div>
+            <h1 class="h3 fw-bold">Khu vực quản trị</h1>
+            <p class="text-secondary mb-0">Đăng nhập bằng tài khoản Admin</p>
+        </div>
+        <div th:if="${param.error == 'access_denied'}" class="alert alert-warning">
+            Vui lòng đăng nhập bằng tài khoản có quyền Admin.
+        </div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <form th:action="@{/login}" method="post">
+            <div class="mb-3">
+                <label class="form-label fw-semibold" for="username">Tên đăng nhập</label>
+                <input id="username" class="form-control" name="username" required autocomplete="username">
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-semibold" for="password">Mật khẩu</label>
+                <input id="password" type="password" class="form-control" name="password" required autocomplete="current-password">
+            </div>
+            <button class="btn btn-primary w-100 py-2 fw-semibold" type="submit">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Đăng nhập
+            </button>
+        </form>
+    </div>
+</main>
+</body>
+</html>
